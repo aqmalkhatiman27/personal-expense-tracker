@@ -2,10 +2,11 @@
 
 namespace App\Models;
 
+use Database\Factories\ExpenseFactory;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Attributes\Fillable;
 
 #[Fillable([
     'category_id',
@@ -17,7 +18,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 ])]
 class Expense extends Model
 {
-    /** @use HasFactory<\Database\Factories\ExpenseFactory> */
+    /** @use HasFactory<ExpenseFactory> */
     use HasFactory;
 
     protected function casts(): array

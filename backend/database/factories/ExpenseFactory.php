@@ -18,7 +18,10 @@ class ExpenseFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'description' => fake()->words(3, true),
+            'amount' => fake()->randomFloat(2, 1, 500),
+            'expense_date' => fake()->dateTimeBetween('-3 months', 'now')->format('Y-m-d'),
+            'note' => fake()->optional()->sentence(),
         ];
     }
 }

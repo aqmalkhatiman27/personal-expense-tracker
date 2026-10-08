@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Expense;
+use App\Models\PaymentMethod;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -15,11 +17,50 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        $this->call(PaymentMethodSeeder::class);
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        $paymentMethods = PaymentMethod::all();
+
+        $primaryUser = User::factory()->create([
+            'name' => 'Demo User',
+            'email' => 'demo@example.com',
         ]);
+
+        $secondaryUser = User::factory()->create([
+            'name' => 'Second Demo User',
+            'email' => 'second@example.com',
+        ]);
+
+        $primaryCategories = $primaryUser->categories()->createMany([
+            ['name' => 'Food'],
+            ['name' => 'Groceries'],
+            ['name' => 'Transport'],
+            ['name' => 'Utilities'],
+            ['name' => 'Shopping'],
+        ]);
+
+        $secondaryCategories = $secondaryUser->categories()->createMany([
+            ['name' => 'Food'],
+            ['name' => 'Transport'],
+            ['name' => 'Entertainment'],
+        ]);
+
+        Expense::factory()
+            ->count(35)
+            ->for($primaryUser)
+            ->state(fn () => [
+                'category_id' => $primaryCategories->random()->id,
+                'payment_method_id' => $paymentMethods->random()->id,
+            ])
+            ->create();
+
+        Expense::factory()
+            ->count(6)
+            ->for($secondaryUser)
+            ->state(fn () => [
+                'category_id' => $secondaryCategories->random()->id,
+                'payment_method_id' => $paymentMethods->random()->id,
+            ])
+            ->create();
     }
 }
